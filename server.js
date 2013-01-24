@@ -10,8 +10,13 @@ http.createServer(function(request, response) {
     , data
     , $
     , translation
+  if (request.headers.host.slice(-15) == '.rhcloud.com:80') {
+      response.write('hello. i am a proxy server.')
+      response.end()
+      return
+  }
   proxy_request = http.request(
-    { hostname: request.headers['host']
+    { hostname: request.headers.host
     , port: 80
     , method: request.method
     , path: url.parse(request.url).pathname
@@ -62,4 +67,4 @@ http.createServer(function(request, response) {
     gizoogle_request.write(data)
     gizoogle_request.end()
   })
-}).listen(8080);
+}).listen(process.env.PORT);
